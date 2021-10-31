@@ -1,7 +1,9 @@
 import base64
 import io
 
+import pydicom
 import numpy as np
+
 import PIL.ExifTags
 import PIL.Image
 import PIL.ImageOps
@@ -95,3 +97,52 @@ def apply_exif_orientation(image):
         return image.transpose(PIL.Image.ROTATE_90)
     else:
         return image
+
+
+def load_dicom_to_pil(
+    filename: str,
+    scale=True,
+    dtype="float32",
+):
+    """
+    Loads a dicom image by path, and converts it PIL Image.
+
+    Adapted from: https://github.com/keras-team/keras-preprocessing/blob/6701f27afa62712b34a17d4b0ff879156b0c7937/keras_preprocessing/image/utils.py#L264
+    # Arguments
+        filename: Dicom path.
+        scale: Whether to rescale the image such that minimum and maximum values
+            are 0 and 255 respectively.
+            Default: True.
+        dtype: Dtype to use.
+            Default: "float32".
+    # Returns
+        A PIL Image instance.
+    # Raises
+        ImportError: if PIL is not available.
+        ValueError: if invalid `x` or `data_format` is passed.
+    """
+    x = pydicom.read_file(filename).pixel_array
+    x = np.asarray(x, dtype=dtype)
+    # Add channel dimension
+    x = np.expand_dims(x, -1)
+
+    if scale:
+        x = x - np.min(x)
+        x_max = np.max(x)
+        if x_max != 0:
+            x /= x_max
+        x *= 255
+    if x.shape[2] == 4:
+        # RGBA
+        return PIL.Image.fromarray(x.astype("uint8"), "RGBA")
+    elif x.shape[2] == 3:
+        # RGB
+        return PIL.Image.fromarray(x.astype("uint8"), "RGB")
+    elif x.shape[2] == 1:
+        # grayscale
+        if np.max(x) > 255:
+            # 32-bit signed integer grayscale image. PIL mode "I"
+            return PIL.Image.fromarray(x[:, :, 0].astype("int32"), "I")
+        return PIL.Image.fromarray(x[:, :, 0].astype("uint8"), "L")
+    else:
+        raise ValueError("Unsupported channel number: %s" % (x.shape[2],))

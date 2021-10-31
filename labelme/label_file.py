@@ -4,8 +4,6 @@ import io
 import os
 import json
 import os.path as osp
-import tensorflow as tf
-import tensorflow_io as tfio
 
 import PIL.Image
 
@@ -57,15 +55,7 @@ class LabelFile(object):
 
         # Check if image is DICOM
         if file_extension == ".dcm":
-            image = tf.io.read_file(filename)
-            # Load image
-            image = tfio.image.decode_dicom_image(
-                image, dtype=tf.float32, color_dim=True
-            )[0]
-
-            # Convert to PIL image
-            image_pil = tf.keras.utils.array_to_img(image)
-
+            image_pil = utils.load_dicom_to_pil(filename)
         else:
             try:
                 image_pil = PIL.Image.open(filename)
