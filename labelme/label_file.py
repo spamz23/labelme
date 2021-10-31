@@ -59,7 +59,7 @@ class LabelFile(object):
         if file_extension == ".dcm":
             image = tf.io.read_file(filename)
             # Load image
-            image = tfio.image.decode_dicom_image(image, dtype=tf.float32)
+            image = tf.squeeze(tfio.image.decode_dicom_image(image, dtype=tf.float32))
 
             # Convert to PIL image
             image_pil = tf.keras.utils.array_to_img(image)
