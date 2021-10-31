@@ -1,8 +1,11 @@
 import base64
 import contextlib
 import io
+import os
 import json
 import os.path as osp
+import tensorflow as tf
+import tensorflow_io as tfio
 
 import PIL.Image
 
@@ -46,6 +49,18 @@ class LabelFile(object):
 
     @staticmethod
     def load_image_file(filename):
+        """
+        Loads an image by path.
+        """
+        # Get file extension
+        _, file_extension = os.path.splitext(filename)
+
+        # Check if image is DICOM
+        if file_extension == ".dcm":
+            image = tf.io.read_file(filename)
+            # Load image
+            image = tfio.image.decode_dicom_image(image, dtype=tf.float32)
+            return image
         try:
             image_pil = PIL.Image.open(filename)
         except IOError:
@@ -90,17 +105,13 @@ class LabelFile(object):
             version = data.get("version")
             if version is None:
                 logger.warn(
-                    "Loading JSON file ({}) of unknown version".format(
-                        filename
-                    )
+                    "Loading JSON file ({}) of unknown version".format(filename)
                 )
             elif version.split(".")[0] != __version__.split(".")[0]:
                 logger.warn(
                     "This JSON file ({}) may be incompatible with "
                     "current labelme. version in file: {}, "
-                    "current version: {}".format(
-                        filename, version, __version__
-                    )
+                    "current version: {}".format(filename, version, __version__)
                 )
 
             if data["imageData"] is not None:
@@ -125,9 +136,7 @@ class LabelFile(object):
                     shape_type=s.get("shape_type", "polygon"),
                     flags=s.get("flags", {}),
                     group_id=s.get("group_id"),
-                    other_data={
-                        k: v for k, v in s.items() if k not in shape_keys
-                    },
+                    other_data={k: v for k, v in s.items() if k not in shape_keys},
                 )
                 for s in data["shapes"]
             ]
