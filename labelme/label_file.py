@@ -62,9 +62,7 @@ class LabelFile(object):
             image = tfio.image.decode_dicom_image(image, dtype=tf.float32)
 
             # Convert to PIL image
-            image_pil = tf.keras.utils.array_to_img(
-                image, data_format=None, scale=True, dtype=None
-            )
+            image_pil = tf.keras.utils.array_to_img(image)
 
             image_pil = PIL.Image.open(filename)
 
