@@ -60,12 +60,20 @@ class LabelFile(object):
             image = tf.io.read_file(filename)
             # Load image
             image = tfio.image.decode_dicom_image(image, dtype=tf.float32)
-            return image
-        try:
+
+            # Convert to PIL image
+            image_pil = tf.keras.utils.array_to_img(
+                image, data_format=None, scale=True, dtype=None
+            )
+
             image_pil = PIL.Image.open(filename)
-        except IOError:
-            logger.error("Failed opening image file: {}".format(filename))
-            return
+
+        else:
+            try:
+                image_pil = PIL.Image.open(filename)
+            except IOError as e:
+                logger.error(f"Failed opening image file: {filename}. Cause: {e}")
+                return
 
         # apply orientation to image according to exif
         image_pil = utils.apply_exif_orientation(image_pil)

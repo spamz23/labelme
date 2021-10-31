@@ -31,9 +31,7 @@ class UniqueLabelQListWidget(EscapableQListWidget):
             qlabel.setText("{}".format(label))
         else:
             qlabel.setText(
-                '{} <font color="#{:02x}{:02x}{:02x}">●</font>'.format(
-                    label, *color
-                )
+                '{} <font color="#{:02x}{:02x}{:02x}">●</font>'.format(label, *color)
             )
         qlabel.setAlignment(Qt.AlignBottom)
 

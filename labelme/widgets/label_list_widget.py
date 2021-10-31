@@ -33,9 +33,7 @@ class HTMLDelegate(QtWidgets.QStyledItemDelegate):
         if option.state & QStyle.State_Selected:
             ctx.palette.setColor(
                 QPalette.Text,
-                option.palette.color(
-                    QPalette.Active, QPalette.HighlightedText
-                ),
+                option.palette.color(QPalette.Active, QPalette.HighlightedText),
             )
         else:
             ctx.palette.setColor(
@@ -122,9 +120,7 @@ class LabelListWidget(QtWidgets.QListView):
         self.setDefaultDropAction(Qt.MoveAction)
 
         self.doubleClicked.connect(self.itemDoubleClickedEvent)
-        self.selectionModel().selectionChanged.connect(
-            self.itemSelectionChangedEvent
-        )
+        self.selectionModel().selectionChanged.connect(self.itemSelectionChangedEvent)
 
     def __len__(self):
         return self.model().rowCount()
@@ -146,9 +142,7 @@ class LabelListWidget(QtWidgets.QListView):
 
     def itemSelectionChangedEvent(self, selected, deselected):
         selected = [self.model().itemFromIndex(i) for i in selected.indexes()]
-        deselected = [
-            self.model().itemFromIndex(i) for i in deselected.indexes()
-        ]
+        deselected = [self.model().itemFromIndex(i) for i in deselected.indexes()]
         self.itemSelectionChanged.emit(selected, deselected)
 
     def itemDoubleClickedEvent(self, index):

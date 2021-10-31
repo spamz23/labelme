@@ -75,22 +75,16 @@ class LabelDialog(QtWidgets.QDialog):
         # label_list
         self.labelList = QtWidgets.QListWidget()
         if self._fit_to_content["row"]:
-            self.labelList.setHorizontalScrollBarPolicy(
-                QtCore.Qt.ScrollBarAlwaysOff
-            )
+            self.labelList.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         if self._fit_to_content["column"]:
-            self.labelList.setVerticalScrollBarPolicy(
-                QtCore.Qt.ScrollBarAlwaysOff
-            )
+            self.labelList.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self._sort_labels = sort_labels
         if labels:
             self.labelList.addItems(labels)
         if self._sort_labels:
             self.labelList.sortItems()
         else:
-            self.labelList.setDragDropMode(
-                QtWidgets.QAbstractItemView.InternalMove
-            )
+            self.labelList.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
         self.labelList.currentItemChanged.connect(self.labelSelected)
         self.labelList.itemDoubleClicked.connect(self.labelDoubleClicked)
         self.edit.setListWidget(self.labelList)
@@ -206,9 +200,7 @@ class LabelDialog(QtWidgets.QDialog):
                 self.labelList.sizeHintForRow(0) * self.labelList.count() + 2
             )
         if self._fit_to_content["column"]:
-            self.labelList.setMinimumWidth(
-                self.labelList.sizeHintForColumn(0) + 2
-            )
+            self.labelList.setMinimumWidth(self.labelList.sizeHintForColumn(0) + 2)
         # if text is None, the previous label in self.edit is kept
         if text is None:
             text = self.edit.text()

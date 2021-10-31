@@ -133,9 +133,7 @@ class Shape(object):
 
     def paint(self, painter):
         if self.points:
-            color = (
-                self.select_line_color if self.selected else self.line_color
-            )
+            color = self.select_line_color if self.selected else self.line_color
             pen = QtGui.QPen(color)
             # Try using integer sizes for smoother drawing(?)
             pen.setWidth(max(1, int(round(2.0 / self.scale))))
@@ -180,11 +178,7 @@ class Shape(object):
             painter.drawPath(vrtx_path)
             painter.fillPath(vrtx_path, self._vertex_fill_color)
             if self.fill:
-                color = (
-                    self.select_fill_color
-                    if self.selected
-                    else self.fill_color
-                )
+                color = self.select_fill_color if self.selected else self.fill_color
                 painter.fillPath(line_path, color)
 
     def drawVertex(self, path, i):
