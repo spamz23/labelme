@@ -28,7 +28,7 @@ def get_install_requires():
 
     install_requires = [
         "imgviz>=0.11",
-        "matplotlib<3.3",  # for PyInstaller
+        "matplotlib",  # for PyInstaller
         "numpy",
         "Pillow>=2.8",
         "PyYAML",
